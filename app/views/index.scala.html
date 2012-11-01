@@ -1,7 +1,13 @@
-@(message: String)
+@(form: Form[Application.LyricsQuery])
 
-@main("Welcome to Play 2.0") {
-    
-    @play20.welcome(message)
-    
+@main("Karaoke Awezomg") {
+	
+	<h1>Karaoke Awezomg</h1>
+	
+	@helper.form(action = routes.Application.lyrics, 'id -> "form-query") {
+		
+		@helper.html5.input(form("q"), '_label -> "Search for lyrics:")
+		
+		<input type="submit" value="Karaoke now!" />
+	}
 }

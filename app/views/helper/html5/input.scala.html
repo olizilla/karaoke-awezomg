@@ -1,0 +1,47 @@
+@**
+ * Generate an HTML5 input element.
+ *
+ * Example:
+ * {{{
+ * @input(field = myForm("website"), args = 'type -> "url")
+ * }}}
+ *
+ * or:
+ * 
+ * {{{
+ * @input(field = myForm("email"))
+ * }}}
+ * 
+ * Where the email field is mapped as a play.api.data.Forms.email.
+ * 
+ * This helper also adds the HTML5 "required" attribute if the field has the appropriate constraint.
+ *
+ * @author Alan Shaw (freestyle-developments.co.uk) 
+ * @param field The form field.
+ * @param args Set of extra attributes.
+ * @param handler The field constructor.
+ *@
+@(field: play.api.data.Field, args: (Symbol,Any)*)(implicit handler: views.html.helper.FieldConstructor, lang: play.api.i18n.Lang)
+
+@* Adds an inferred HTML5 type if the user has not already specified one in the passed htmlArgs *@
+@html5Type(htmlArgs: Map[Symbol, Any]) = {
+	
+	@* If the user has not specified a type attribute, try to infer the type *@
+	@if(htmlArgs.filter(a => a._1.name == "type").isEmpty) {
+		
+		@* If the field has the email constraint then it is an email field *@
+		@if(!field.constraints.filter(c => {c._1 == "constraint.email"}).isEmpty) {
+			type="email"
+		@* Default to text *@
+		} else {
+			type="text"
+		}
+	}
+}
+
+@* Adds the HTML5 required attribute if the field is found to have the required constraint *@
+@required() = {@if(!field.constraints.filter(c => {c._1 == "constraint.required"}).isEmpty) { required}}
+
+@views.html.helper.input(field, args:_*) { (id, name, value, htmlArgs) =>
+    <input @html5Type(htmlArgs) id="@id" name="@name"@required() @toHtmlArgs(htmlArgs)>
+}

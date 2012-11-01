@@ -2,11 +2,22 @@ package controllers
 
 import play.api._
 import play.api.mvc._
+import play.api.data.Form
+import play.api.data.Forms._
 
 object Application extends Controller {
-  
-  def index = Action {
-    Ok(views.html.index("Your new application is ready."))
-  }
-  
+	
+	case class LyricsQuery(keywords: String)
+	
+	def index = Action {
+		
+		val form = Form(mapping("q" -> nonEmptyText)(LyricsQuery.apply)(LyricsQuery.unapply))
+		
+		Ok(views.html.index(form))
+	}
+	
+	def lyrics = Action {
+		Ok
+	}
+	
 }
